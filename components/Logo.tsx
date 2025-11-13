@@ -6,7 +6,7 @@ type Props = {
 };
 
 export function Logo({ className }: Props) {
-  // Use a unique id in case the component renders multiple times on a page
+  // Unique id so gradient defs don't collide if the logo renders multiple times
   const gradId = React.useId();
 
   return (
@@ -24,16 +24,17 @@ export function Logo({ className }: Props) {
       </defs>
 
       {/* Background circle */}
-      <circle cx="32" cy="32" r="30" fill="url(#" + gradId + ")" opacity="0.15" />
+      <circle cx="32" cy="32" r="30" fill={`url(#${gradId})`} opacity="0.15" />
 
       {/* Monogram / mark */}
-      <g fill="none" stroke="url(#" + gradId + ")" strokeWidth="4" strokeLinecap="round">
+      <g fill="none" stroke={`url(#${gradId})`} strokeWidth={4} strokeLinecap="round">
         {/* Stylized “E” */}
-        <path d="M18 22h20M18 32h16M18 42h20" />
-        {/* Accent diagonal (suggests motion/automation) */}
+        <path d="M18 22h20" />
+        <path d="M18 32h16" />
+        <path d="M18 42h20" />
+        {/* Accent diagonal */}
         <path d="M36 18l10 28" />
       </g>
     </svg>
   );
 }
-
