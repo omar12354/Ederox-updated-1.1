@@ -22,9 +22,18 @@ html:focus-within { scroll-behavior: smooth; }
     @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200
            focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400;
   }
-  .btn-primary {
-    @apply bg-white text-base-950 hover:bg-slate-200 shadow-soft;
-  }
+  .btn {
+  @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-medium transition;
+}
+
+.btn-primary {
+  @apply btn bg-white text-base-950 hover:bg-slate-200 shadow-sm;
+}
+
+.btn-ghost {
+  @apply btn border border-white/10 text-white hover:bg-white/10;
+}
+
   .btn-ghost {
     @apply bg-transparent text-white hover:bg-white/10;
   }
