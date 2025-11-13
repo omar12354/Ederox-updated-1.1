@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html:focus-within { scroll-behavior: smooth; }
+:target { scroll-margin-top: 6rem; }
+
+@layer base {
+  body {
+    @apply bg-base-950 text-slate-100 antialiased;
+    background-image: radial-gradient(800px 400px at 100% 0%, rgba(34,211,238,0.06), transparent);
+  }
+  a { @apply underline-offset-4 decoration-transparent hover:decoration-brand-400; }
+}
+
+@layer components {
+  .section { @apply relative py-20 sm:py-28; }
+  .card {
+    @apply rounded-2xl border border-white/10 bg-white/5 p-6 shadow-sm backdrop-blur;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400;
+  }
+  .btn-primary {
+    @apply bg-white text-base-950 hover:bg-slate-200 shadow-soft;
+  }
+  .btn-ghost {
+    @apply bg-transparent text-white hover:bg-white/10;
+  }
+  .chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs text-white/90;
+  }
+  .h1 { @apply text-4xl font-extrabold tracking-tight sm:text-5xl; }
+  .h2 { @apply text-2xl font-bold tracking-tight sm:text-3xl; }
+  .muted { @apply text-white/70; }
+}
