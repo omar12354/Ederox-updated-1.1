@@ -1,22 +1,65 @@
 "use client";
 
-import * as React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Logo } from "@/components/Logo";
-import { ArrowRight, Calendar, Mail, Play } from "lucide-react";
+import { ArrowRight, Calendar, Mail, Check, Play, ShoppingCart } from "lucide-react";
+import clsx from "clsx";
+import React from "react";
 
 const CONFIG = {
   brand: "Ederox",
-  tagline: "AI automation for every business.",
-  sub: "We design, build, and operate assistants, agents, and end‑to‑end automations across sales, operations, support, and digital presence.",
-  calendly: "https://calendly.com/PLACEHOLDER/intro",
+  tagline: "AI agents that grow your store.",
+  sub: "Custom agents and CRM integrations for e-commerce—implemented fast, measured by revenue, and safeguarded with evals & guardrails.",
+  calendly: "https://calendly.com/YOUR_CALENDLY_LINK/intro",
+  emailTo: "hello@yourdomain.com",
   nav: [
     { href: "#solutions", label: "Solutions" },
-    { href: "#work-with-us", label: "Work with us" },
-    { href: "#process", label: "Process" },
-    { href: "#faq", label: "FAQ" },
+    { href: "#demos", label: "Demos" },
+    { href: "#pricing", label: "Pricing" },
+    { href: "#about", label: "Process" },
     { href: "#contact", label: "Contact" },
+  ],
+  tiers: [
+    {
+      name: "Launch",
+      tagline: "Foundation to first value",
+      price: 750,
+      features: [
+        "Discovery & success metrics",
+        "Single agent or CRM integration",
+        "Eval harness & guardrails",
+        "Deployment checklist",
+      ],
+      cta: "Get started",
+      popular: false,
+    },
+    {
+      name: "Scale",
+      tagline: "Revenue-ready implementation",
+      price: 1650,
+      features: [
+        "Everything in Launch",
+        "2–3 integrations (CRM/Helpdesk/Docs)",
+        "Conversion tracking & dashboards",
+        "Team training & handoff",
+      ],
+      cta: "Most popular",
+      popular: true,
+    },
+    {
+      name: "Prime",
+      tagline: "Maximum impact, fast",
+      price: 1850,
+      features: [
+        "Everything in Scale",
+        "Multi-agent orchestration",
+        "Private data pipelines",
+        "SLOs, observability & optimization",
+      ],
+      cta: "Best value",
+      popular: true,
+    },
   ],
 };
 
@@ -25,9 +68,13 @@ export default function Page() {
     <main id="main">
       <Header />
       <Hero />
+      <Trust />
       <Solutions />
-      <WorkWithUs />
+      <Demos />
+      <Stats />
+      <Pricing />
       <Process />
+      <Testimonials />
       <FAQ />
       <Contact />
       <Footer />
@@ -43,16 +90,43 @@ function Header() {
           <Logo className="h-8 w-8" />
           <span className="font-semibold tracking-tight">{CONFIG.brand}</span>
         </Link>
-        <nav aria-label="Main" className="hidden items-center gap-6 text-sm md:flex">
+        <nav aria-label="Main" className="hidden md:flex items-center gap-6 text-sm">
           {CONFIG.nav.map((n) => (
             <a key={n.href} href={n.href} className="hover:text-white/90">
               {n.label}
             </a>
           ))}
-          <a href={CONFIG.calendly} target="_blank" rel="noreferrer" className="btn btn-primary no-underline">
+          <a
+            href={CONFIG.calendly}
+            target="_blank"
+            rel="noreferrer"
+            className="btn btn-primary no-underline"
+          >
             Book a consult <Calendar className="ml-2 h-4 w-4" />
           </a>
         </nav>
+        <details className="group md:hidden">
+          <summary className="btn btn-ghost list-none">Menu</summary>
+          <div className="absolute right-4 mt-2 w-64 rounded-xl border border-white/10 bg-base-950 p-2 shadow-lg">
+            {CONFIG.nav.map((n) => (
+              <a
+                key={n.href}
+                href={n.href}
+                className="block rounded-lg px-3 py-2 text-sm hover:bg-white/10"
+              >
+                {n.label}
+              </a>
+            ))}
+            <a
+              href={CONFIG.calendly}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-1 block rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-base-950 hover:bg-slate-200"
+            >
+              Book a consult
+            </a>
+          </div>
+        </details>
       </div>
     </header>
   );
@@ -63,7 +137,17 @@ function Hero() {
     <section className="section bg-hero-mesh">
       <div className="container">
         <div className="mx-auto max-w-3xl text-center">
-          <motion.h1 className="h1" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, ease: "easeOut" }}>
+          <span className="chip mb-6">
+            <ShoppingCart className="h-3.5 w-3.5" />
+            E-commerce • Agents • CRM
+          </span>
+          <motion.h1
+            className="h1"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
             {CONFIG.tagline}
           </motion.h1>
           <p className="mt-4 text-lg leading-relaxed muted">{CONFIG.sub}</p>
@@ -71,7 +155,7 @@ function Hero() {
             <a href={CONFIG.calendly} target="_blank" rel="noreferrer" className="btn btn-primary no-underline">
               Book on Calendly <ArrowRight className="ml-2 h-4 w-4" />
             </a>
-            <a href="#solutions" className="btn btn-ghost no-underline">Explore solutions</a>
+            <a href="#contact" className="btn btn-ghost no-underline">Get a proposal</a>
           </div>
         </div>
       </div>
@@ -79,122 +163,24 @@ function Hero() {
   );
 }
 
-function Solutions() {
-  const groups = [
-    { title: "Sales & Marketing Automation", items: ["AI outreach & follow-up sequences","Lead qualification bots","CRM & lead scoring automation","Social content & scheduling","Ad campaign optimization"] },
-    { title: "Operations & Delivery Automation", items: ["Service delivery pipelines","Document & contract automation","Scheduling & task orchestration","Finance & invoice workflows","HR & recruitment automation"] },
-    { title: "Communication & Support Automation", items: ["AI phone callers / voice agents","Tier‑1 support agents","Appointment reminders & confirmations","Sentiment & intent analysis","FAQ & knowledge bots"] },
-    { title: "Digital Presence & Commerce", items: ["Websites & web apps","E‑commerce automations","Website chatbots & lead capture","Analytics & user insights"] },
-  ];
+function Trust() {
+  const anonymized = ["Top DTC Apparel", "Premium Beauty", "Gourmet Food", "Home & Living", "Fitness Gear", "Electronics"];
   return (
-    <section id="solutions" className="section">
+    <section aria-label="Trusted by" className="section pt-0">
       <div className="container">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="h2">Solutions</h2>
-          <p className="mt-3 muted">Four categories. Click to explore the automations inside.</p>
-        </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {groups.map((g) => (
-            <details key={g.title} className="group card">
-              <summary className="flex cursor-pointer list-none items-center justify-between">
-                <h3 className="text-lg font-semibold">{g.title}</h3>
-                <svg className="h-5 w-5 text-white/70 transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-              </summary>
-              <ul className="mt-4 space-y-2 text-sm text-white/80">
-                {g.items.map((it) => (<li key={it} className="flex items-start gap-2"><span className="mt-0.5 inline-block h-4 w-4 rounded-full bg-brand-400/80"></span><span>{it}</span></li>))}
-              </ul>
-              <div className="mt-4">
-                <a href={CONFIG.calendly} target="_blank" rel="noreferrer" className="btn btn-ghost no-underline">Book a call about {g.title}</a>
+        <div className="mx-auto max-w-5xl rounded-2xl border border-white/10 bg-white/5 p-6 text-center backdrop-blur">
+          <p className="muted text-sm">Trusted by e-commerce teams (anonymized)</p>
+          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {anonymized.map((name) => (
+              <div
+                key={name}
+                className="flex h-10 items-center justify-center rounded-lg border border-dashed border-white/10 text-xs text-white/60"
+                aria-label={`${name} (anonymized)`}
+              >
+                {name}
               </div>
-            </details>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function WorkWithUs() {
-  const [submitted, setSubmitted] = React.useState(false);
-  function onSubmit(e){ e.preventDefault(); setSubmitted(true); setTimeout(()=>setSubmitted(false), 4000); }
-  return (
-    <section id="work-with-us" className="section">
-      <div className="container">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="h2">Work with Ederox</h2>
-          <p className="mt-3 muted">Every business is different — so is your automation plan.</p>
-        </div>
-        <div className="mx-auto mt-10 grid max-w-5xl gap-6 md:grid-cols-2">
-          <div className="card">
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-2"><span className="mt-0.5 inline-block h-4 w-4 rounded-full bg-brand-400/80"></span><span>No fixed pricing — every solution is tailored to your goals.</span></li>
-              <li className="flex items-start gap-2"><span className="mt-0.5 inline-block h-4 w-4 rounded-full bg-brand-400/80"></span><span>From startups to enterprises — we scale with your ambitions.</span></li>
-              <li className="flex items-start gap-2"><span className="mt-0.5 inline-block h-4 w-4 rounded-full bg-brand-400/80"></span><span>Empowering businesses to operate smarter, faster, and more efficiently — in any industry.</span></li>
-            </ul>
-            <div className="mt-6">
-              <a href={CONFIG.calendly} target="_blank" rel="noreferrer" className="btn btn-primary no-underline">Book a call <Calendar className="ml-2 h-4 w-4" /></a>
-            </div>
-            <p className="muted mt-3 text-xs">Prefer a written plan? Share a few details and we’ll tailor one for you.</p>
+            ))}
           </div>
-          <form onSubmit={onSubmit} className="card space-y-4" aria-label="Custom plan form">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div><label htmlFor="name" className="block text-sm font-medium">Name</label><input id="name" name="name" required className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white placeholder-white/50 focus:border-brand-400 focus:ring-brand-400" placeholder="Jane Doe" /></div>
-              <div><label htmlFor="email" className="block text-sm font-medium">Email</label><input type="email" id="email" name="email" required className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white placeholder-white/50 focus:border-brand-400 focus:ring-brand-400" placeholder="jane@company.com" /></div>
-            </div>
-            <div><label htmlFor="company" className="block text-sm font-medium">Company / Business type</label><input id="company" name="company" className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white placeholder-white/50 focus:border-brand-400 focus:ring-brand-400" placeholder="Acme Inc. — B2B services" /></div>
-            <div><label htmlFor="budget" className="block text-sm font-medium">Approximate budget (optional)</label><select id="budget" name="budget" className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white focus:border-brand-400 focus:ring-brand-400"><option value="">Prefer not to say</option><option value="5-10">$5k–$10k</option><option value="10-25">$10k–$25k</option><option value="25-50">$25k–$50k</option><option value="50plus">$50k+</option></select></div>
-            <div><label htmlFor="message" className="block text-sm font-medium">What would you like to automate?</label><textarea id="message" name="message" rows={4} required className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white placeholder-white/50 focus:border-brand-400 focus:ring-brand-400" placeholder="Goals, systems, and timeline" /></div>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <button className="btn btn-primary w-full sm:w-auto" type="submit">Get my custom plan</button>
-              <a href={CONFIG.calendly} target="_blank" rel="noreferrer" className="btn btn-ghost w-full sm:w-auto no-underline">Or book a call</a>
-            </div>
-            {submitted && (<p className="rounded-xl border border-white/10 bg-white/5 p-3 text-sm">Thank you — an Ederox specialist will contact you shortly.</p>)}
-          </form>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Process() {
-  return (
-    <section id="process" className="section">
-      <div className="container">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="h2">How we work</h2>
-          <p className="mt-3 muted">A crisp path from brief to business value.</p>
-        </div>
-        <div className="mx-auto mt-10 max-w-4xl grid gap-6 sm:grid-cols-2">
-          <div className="card"><div className="chip mb-3">Step 1</div><h3 className="font-semibold">Discovery</h3><p className="mt-2 text-sm text-white/80">Goals, constraints, data sources, and success metrics.</p></div>
-          <div className="card"><div className="chip mb-3">Step 2</div><h3 className="font-semibold">Design</h3><p className="mt-2 text-sm text-white/80">Architecture, safety, evaluations, and rollout plan.</p></div>
-          <div className="card"><div className="chip mb-3">Step 3</div><h3 className="font-semibold">Build</h3><p className="mt-2 text-sm text-white/80">Integrations, agents, and dashboards with observability.</p></div>
-          <div className="card"><div className="chip mb-3">Step 4</div><h3 className="font-semibold">Launch</h3><p className="mt-2 text-sm text-white/80">Guardrails, monitoring, and iteration on real usage.</p></div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FAQ() {
-  const items = [
-    { q: "Which tools do you integrate?", a: "HubSpot, Salesforce, Zendesk, Intercom, Notion, Postgres, S3, Google Drive, Slack, and custom APIs." },
-    { q: "How do you handle safety?", a: "Evals, rate limits, content filters, human‑in‑the‑loop options, and full observability with quick rollback." },
-    { q: "What’s the typical timeline?", a: "Discovery in days, first value within two weeks, production rollout depending on scope." },
-  ];
-  return (
-    <section id="faq" className="section">
-      <div className="container">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="h2">FAQ</h2>
-          <p className="mt-3 muted">Short answers. Ask for more details on a call.</p>
-        </div>
-        <div className="mx-auto mt-10 max-w-3xl divide-y divide-white/10 rounded-2xl border border-white/10">
-          {items.map((it) => (
-            <details key={it.q} className="group p-5">
-              <summary className="cursor-pointer list-none font-medium">{it.q}</summary>
-              <p className="mt-3 text-sm text-white/80">{it.a}</p>
-            </details>
-          ))}
         </div>
       </div>
     </section>
@@ -202,6 +188,15 @@ function FAQ() {
 }
 
 function Contact() {
+  const [submitted, setSubmitted] = React.useState(false);
+
+  // ✅ Type-safe submit handler
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 4000);
+  }
+
   return (
     <section id="contact" className="section">
       <div className="container">
@@ -209,18 +204,73 @@ function Contact() {
           <h2 className="h2">Let’s talk</h2>
           <p className="mt-3 muted">Book a quick call or send a note. We respond within 1 business day.</p>
         </div>
+
         <div className="mx-auto mt-10 max-w-xl">
-          <form className="card space-y-4" aria-label="Contact form">
+          <form onSubmit={onSubmit} className="card space-y-4" aria-label="Custom plan form">
             <div className="grid gap-4 sm:grid-cols-2">
-              <div><label htmlFor="name2" className="block text-sm font-medium">Name</label><input id="name2" required className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white placeholder-white/50 focus:border-brand-400 focus:ring-brand-400" placeholder="Jane Doe" /></div>
-              <div><label htmlFor="email2" className="block text-sm font-medium">Email</label><input type="email" id="email2" required className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white placeholder-white/50 focus:border-brand-400 focus:ring-brand-400" placeholder="jane@brand.com" /></div>
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium">Name</label>
+                <input id="name" name="name" required className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white placeholder-white/50 focus:border-brand-400 focus:ring-brand-400" placeholder="Jane Doe" />
+              </div>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium">Email</label>
+                <input id="email" name="email" type="email" required className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white placeholder-white/50 focus:border-brand-400 focus:ring-brand-400" placeholder="jane@brand.com" />
+              </div>
             </div>
-            <div><label htmlFor="msg2" className="block text-sm font-medium">Message</label><textarea id="msg2" rows={4} className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white placeholder-white/50 focus:border-brand-400 focus:ring-brand-400" placeholder="How can we help?" /></div>
+
+            <div>
+              <label htmlFor="store" className="block text-sm font-medium">Store URL</label>
+              <input id="store" name="store" required className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white placeholder-white/50 focus:border-brand-400 focus:ring-brand-400" placeholder="https://yourstore.com" />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label htmlFor="platform" className="block text-sm font-medium">Platform</label>
+                <select id="platform" name="platform" className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white focus:border-brand-400 focus:ring-brand-400">
+                  <option>Shopify</option>
+                  <option>WooCommerce</option>
+                  <option>Magento</option>
+                  <option>Custom</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="orders" className="block text-sm font-medium">Monthly orders</label>
+                <select id="orders" name="orders" className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white focus:border-brand-400 focus:ring-brand-400">
+                  <option>0–500</option>
+                  <option>500–2k</option>
+                  <option>2k–10k</option>
+                  <option>10k+</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="interest" className="block text-sm font-medium">What are you interested in?</label>
+              <select id="interest" name="interest" className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white focus:border-brand-400 focus:ring-brand-400">
+                <option>Support Copilot</option>
+                <option>Sales Assist</option>
+                <option>Ops Automations</option>
+                <option>Custom Agent</option>
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium">Notes</label>
+              <textarea id="message" name="message" rows={4} className="mt-2 block w-full rounded-xl border-white/10 bg-white/5 text-white placeholder-white/50 focus:border-brand-400 focus:ring-brand-400" placeholder="Goals, timeline, and any context" />
+            </div>
+
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <button className="btn btn-primary w-full sm:w-auto" type="button">Send message <Mail className="ml-2 h-4 w-4" /></button>
-              <a href={CONFIG.calendly} target="_blank" rel="noreferrer" className="btn btn-ghost w-full sm:w-auto no-underline">Or book on Calendly</a>
+              <button className="btn btn-primary w-full sm:w-auto" type="submit">
+                Send message <Mail className="ml-2 h-4 w-4" />
+              </button>
+              <a href={CONFIG.calendly} target="_blank" rel="noreferrer" className="btn btn-ghost w-full sm:w-auto no-underline">
+                Or book on Calendly
+              </a>
             </div>
-            <p className="muted text-xs">We’ll only use your info to respond. No spam.</p>
+
+            {submitted && (
+              <p className="text-sm text-green-400 mt-2">Thanks! Your message has been sent.</p>
+            )}
           </form>
         </div>
       </div>
@@ -235,8 +285,8 @@ function Footer() {
         <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
           <p className="text-sm muted">© {new Date().getFullYear()} {CONFIG.brand}. All rights reserved.</p>
           <nav className="flex items-center gap-4 text-sm">
-            <a href="#work-with-us">Work with us</a>
-            <a href="#process">Process</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#about">Process</a>
             <a href="#contact">Contact</a>
           </nav>
         </div>
