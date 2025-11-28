@@ -1,7 +1,8 @@
+// app/layout.tsx
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { sora, inter } from "./fonts";
-import Script from "next/script";
 
 const SITE = {
   name: "Ederox",
@@ -30,10 +31,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" className={`${sora.variable} ${inter.variable}`}>
       <body className="font-sans [--font-sans:var(--font-inter)] [--font-display:var(--font-sora)]">
+        {/* Skip link for accessibility */}
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-3 focus:py-2 focus:text-base-950"
@@ -43,32 +49,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {children}
 
-        {/* Voiceflow Chat Widget */}
+        {/* Voiceflow chat widget */}
         <Script
-          id="voiceflow-widget"
+          id="voiceflow-chat-widget"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
-            __html: `(function(d, t) {
-              var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
-              v.onload = function() {
-                window.voiceflow.chat.load({
-                  verify: { projectID: '692895247539ea03596d6695' },
-                  url: 'https://general-runtime.voiceflow.com',
-                  versionID: 'production',
-                  voice: {
-                    url: "https://runtime-api.voiceflow.com"
-                  }
-                });
-              };
-              v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs";
-              v.type = "text/javascript";
-              s.parentNode.insertBefore(v, s);
-            })(document, 'script');`,
+            __html: `
+              (function(d, t) {
+                var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+                v.onload = function() {
+                  window.voiceflow.chat.load({
+                    verify: { projectID: "692895247359ea03596d6695" }, // your Voiceflow project ID
+                    url: "https://general-runtime.voiceflow.com",
+                    versionID: "production",
+                    voice: {
+                      url: "https://runtime-api.voiceflow.com"
+                    }
+                  });
+                };
+                v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs";
+                v.type = "text/javascript";
+                s.parentNode.insertBefore(v, s);
+              })(document, "script");
+            `,
           }}
         />
       </body>
     </html>
   );
 }
+
 
 
